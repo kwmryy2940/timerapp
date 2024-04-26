@@ -4,6 +4,7 @@ import router from "./router";
 import App from './App.vue'
 
 // Vuetify のインポートを追加 **********/
+import "@mdi/font/css/materialdesignicons.css";
 import "vuetify/styles";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
