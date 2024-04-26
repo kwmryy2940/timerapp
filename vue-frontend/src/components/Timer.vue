@@ -88,8 +88,8 @@
 </template>
 
 <script setup>
-import { nextTick } from "vue";
-import { onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import audioFile from "../assets/Osampo_Biyori-1(Slow).mp3";
 
 const buttonText = ref("Start");
 const timerRunning = ref(false);
@@ -109,7 +109,9 @@ const errorSnackBar = ref(false); // エラー通知バーの表示を管理す�
 const errorSnackBarText = ref(""); // エラー通知バーの通知内容
 
 const isActive = ref(false);
-const isSelectionDisable=ref(false);
+const isSelectionDisable = ref(false);
+
+const audio = ref(null);
 
 let timer = null;
 
@@ -118,10 +120,11 @@ function clickTimerButton() {
   // Stopボタンを押したときの処理
   if (timerRunning.value) {
     clearInterval(timer);
-    isSelectionDisable.value=false;
+    isSelectionDisable.value = false;
     buttonText.value = "Start";
-    // Startボタンを押したときの処理
-  } else {
+  }
+  // Startボタンを押したときの処理
+  else {
     if (
       selectedHours.value === 0 &&
       selectedMinutes.value === 0 &&
@@ -137,7 +140,7 @@ function clickTimerButton() {
       selectedMinutes.value * 60 +
       selectedSeconds.value;
 
-    isSelectionDisable.value=true;
+    isSelectionDisable.value = true;
     buttonText.value = "Stop";
     countDown();
   }
@@ -152,8 +155,10 @@ async function reset() {
   selectedMinutes.value = 0;
   selectedSeconds.value = 0;
   timerRunning.value = false;
-  isSelectionDisable.value=false;
+  isSelectionDisable.value = false;
   buttonText.value = "Start";
+  audio.value.pause();
+  audio.value.currentTime = 0;
 }
 
 async function countDown() {
@@ -163,8 +168,23 @@ async function countDown() {
   }, 1000);
 }
 
+onMounted(() => {
+  audio.value = new Audio(audioFile);
+  audio.value.currentTime = 0; // オーディオの再生位置を0に戻す
+});
+
 onUnmounted(() => {
   clearInterval(timer);
+});
+
+watch(isActive, (value) => {
+  if (value) {
+    audio.value.currentTime = 0; // オーディオの再生位置を0に戻す
+    audio.value.play();
+  }else{
+    audio.value.currentTime = 0; // オーディオの再生位置を0に戻す
+    audio.value.pause();
+  }
 });
 
 watch(interval, async (value) => {
