@@ -12,3 +12,8 @@ import Timer from '../components/Timer.vue';
     </v-main>
   </v-app>
 </template>
+</script>
+
+<template>
+    <h1>Timer App</h1>
+</template>
